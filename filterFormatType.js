@@ -3,10 +3,24 @@ import { compose, ifCondition } from '@wordpress/compose'
 import { withSelect } from '@wordpress/data'
 import { BlockControls } from '@wordpress/block-editor'
 import { ToolbarButton } from '@wordpress/components'
-import { formatBold, formatItalic, link } from '@wordpress/icons'
+import { formatBold, formatItalic } from '@wordpress/icons'
 import { __ } from '@wordpress/i18n'
 
 domReady( () => {
+
+	// Bold & Italic are unregistered for all blocks using RichText
+	wp.richText.unregisterFormatType('core/bold')
+	wp.richText.unregisterFormatType('core/italic')
+	// wp.richText.unregisterFormatType( 'core/text-color' )
+	// wp.richText.unregisterFormatType( 'core/code' )
+	// wp.richText.unregisterFormatType( 'core/keyboard' )
+	// wp.richText.unregisterFormatType('core/image')
+	// wp.richText.unregisterFormatType('core/keyboard')
+	// wp.richText.unregisterFormatType('core/superscript')
+	// wp.richText.unregisterFormatType('core/subscript')
+	// wp.richText.unregisterFormatType('core/underline')
+	// wp.richText.unregisterFormatType('core/strikethrough')
+
 	const BoldButton = ( props ) => {
 		return (
 			<BlockControls>
@@ -45,25 +59,6 @@ domReady( () => {
 		)
 	}
 
-	const LinkButton = ( props ) => {
-		return (
-			<BlockControls>
-				<ToolbarButton
-					icon={ link }
-					title={ __('Link', 'mytextdomain') }
-					onClick={ () => {
-						props.onChange(
-							wp.richText.toggleFormat( props.value, {
-								type: 'core/link',
-							} )
-						);
-					} }
-					isActive={ props.isActive }
-				/>
-			</BlockControls>
-		)
-	}
-
 	const ConditionalBoldButton = compose(
         withSelect( select => {
             return {
@@ -90,33 +85,6 @@ domReady( () => {
         } )
     )( ItalicButton )
 
-	const ConditionalLinkButton = compose(
-        withSelect( select => {
-            return {
-                selectedBlock: select( 'core/editor' ).getSelectedBlock()
-            }
-        } ),
-        ifCondition( props => {
-            return (
-                props.selectedBlock && props.selectedBlock.name === 'core/paragraph'
-            );
-        } )
-    )( LinkButton )
-
-	// Link, Bold & Italic are unregistered for all blocks using RichText
-	wp.richText.unregisterFormatType( 'core/link' )
-	wp.richText.unregisterFormatType('core/bold')
-	wp.richText.unregisterFormatType('core/italic')
-	// wp.richText.unregisterFormatType( 'core/text-color' )
-	// wp.richText.unregisterFormatType( 'core/code' )
-	// wp.richText.unregisterFormatType( 'core/keyboard' )
-	// wp.richText.unregisterFormatType('core/image')
-	// wp.richText.unregisterFormatType('core/keyboard')
-	// wp.richText.unregisterFormatType('core/superscript')
-	// wp.richText.unregisterFormatType('core/subscript')
-	// wp.richText.unregisterFormatType('core/underline')
-	// wp.richText.unregisterFormatType('core/strikethrough')
-
 	// Then they are re-registered conditionally (on specific blocks)
 	wp.richText.registerFormatType(
         'core/bold', {
@@ -132,14 +100,6 @@ domReady( () => {
             tagName: 'em',
             className: 'myprefix-text-italic',
             edit: ConditionalItalicButton,
-        }
-    )
-	wp.richText.registerFormatType(
-        'core/link', {
-            title: __('Link', 'mytextdomain'),
-            tagName: 'a',
-            className: 'myprefix-text-link',
-            edit: ConditionalLinkButton,
         }
     )
 } )
