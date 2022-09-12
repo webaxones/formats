@@ -62,7 +62,7 @@ domReady( () => {
 	const ConditionalBoldButton = compose(
         withSelect( select => {
             return {
-                selectedBlock: select( 'core/editor' ).getSelectedBlock()
+                selectedBlock: select( 'core/block-editor' ).getSelectedBlock()
             }
         } ),
         ifCondition( props => {
@@ -75,7 +75,7 @@ domReady( () => {
 	const ConditionalItalicButton = compose(
         withSelect( select => {
             return {
-                selectedBlock: select( 'core/editor' ).getSelectedBlock()
+                selectedBlock: select( 'core/block-editor' ).getSelectedBlock()
             }
         } ),
         ifCondition(props => {
